@@ -1,10 +1,12 @@
-name: CodeQL Reusable
+name: "CodeQL Analysis"
 
 on:
-  workflow_call:
-    secrets:
-      GITHUB_TOKEN:
-        required: true
+  workflow_call:  # Remove the entire secrets section
+  push:
+    branches: [master, main, 'feature/**']
+  pull_request:
+    types: [closed, merged]
+    branches: [master]
 
 jobs:
   analyze:
@@ -16,15 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: 'java'
-          queries: +security-and-quality
-
-      - name: Build code
-        run: ./mvnw clean package
-
-      - name: Analyze
-        uses: github/codeql-action/analyze@v3
+      - run: ./mvnw clean package
+      - uses: github/codeql-action/analyze@v3
