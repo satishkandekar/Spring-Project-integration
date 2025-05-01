@@ -1,26 +1,43 @@
 name: "CodeQL Analysis"
 
 on:
-  workflow_call:  # Remove the entire secrets section
+  workflow_call:
   push:
-    branches: [master, main, 'feature/**']
+    branches:
+      - master
+      - 'feature/**'
+      - main
   pull_request:
-    types: [closed, merged]
-    branches: [master]
+    types:
+      - closed
+      - merged
+    branches:
+      - master
 
 jobs:
   analyze:
+    name: Analyze
     runs-on: ubuntu-latest
+
     permissions:
       actions: read
       contents: read
       security-events: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: 'java'
-      - run: ./mvnw clean package
-      - uses: github/codeql-action/analyze@v3
+          languages: java
+
+      - name: Build the code
+        run: |
+          # Command to build your Java Spring Boot application
+          ./mvnw clean package
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
