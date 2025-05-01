@@ -16,14 +16,14 @@ on:
 
 jobs:
   codeql-analysis:
-    uses: ./.github/workflows/codeql-analysis-reusable.yml
+    uses: ./.github/workflows/codeql-analysis.yml
     with:
       branch_name: ${{ github.ref_name }}
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonarcloud:
-    uses: ./.github/workflows/sonarcloud-reusable.yml
+    uses: ./.github/workflows/sonarcloud.yml
     with:
       branch_name: ${{ github.ref_name }}
     secrets:
@@ -33,7 +33,7 @@ jobs:
   docker-build:
     needs: [codeql-analysis, sonarcloud]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/'))
-    uses: ./.github/workflows/docker-build-reusable.yml
+    uses: ./.github/workflows/docker-build.yml
     with:
       branch_name: ${{ github.ref_name }}
       sha: ${{ github.sha }}
